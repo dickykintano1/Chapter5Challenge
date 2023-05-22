@@ -5,6 +5,8 @@ const port = 3000;
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 let datas = require('./db/user-data.json');
 
 app.get('/', (req,res)=>{
@@ -24,30 +26,27 @@ app.get('/signup', (req,res)=>{
     res.render('signup');
 })
 
-// app.get('/userdata', (req,res)=>{
-//     res.send([
-//         {
-//             username:'Peter',
-//             email:'peter@test.com'
-//         },
-//         {
-//             username:'Bruce',
-//             email:'wayne@test.com'
-//         }
-//     ]);
-// })
-
-app.post('/signup/post', (req,res)=>{
-    // const username = req.username
-    // const password = req.password
-
-    // const data = {username,password}
-
-    // datas.push(data)
-
-    // res.status(201).json(data)
+app.get('/userdata', (req,res)=>{
+    res.send(datas);
 })
+
+app.post('/signup', (req,res)=>{
+    const username = req.body.username;
+    const password = req.body.password;
+    //put err handler here
+    res.send(username);
+    // addUserData(username, password, datas);
+})
+
 
 app.listen(port, ()=>{
     console.log('port ' + port)
 });
+
+function addUserData(username, password, db){
+    let userData = {
+        'username': username,
+        'password': password
+    }
+    db.push(userData);
+};
