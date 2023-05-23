@@ -12,12 +12,12 @@
         LOG IN
     </h1>
     <div class="form-container">
-        <form>
+        <form action="/login/auth" method="post">
             <label>Username:</label><br>
-            <input type="text"><br>
+            <input id = 'username' name = 'username' type="text"><br>
             <label>Password:</label><br>
-            <input type="text"><br><br>
-            <input type="submit" value="Log in">
+            <input id = 'password' name = 'password' type="password"><br><br>
+            <input id ='submit' type="submit" value="Submit">
         </form>
     </div>  
 </body>
