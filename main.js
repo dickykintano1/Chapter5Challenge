@@ -31,11 +31,9 @@ app.post('/login/auth', (req,res) =>{
         return res.status(400).send('Password Required')
     }
     try {
-        if((authenticationData(username, password)) == 'valid'){
-            // const data = datas.find(i => i.username === req.params.username)
-            res.send(`welcome, ${data.username}`)
-            // res.redirect('../user/:id');
-
+        if((authenticationData(username, password)) === 'valid'){
+            const data = datas.find(i => i.username === username);
+            res.redirect(`/user/${data.id}`)
         } else {
             res.send('Incorrect Username and/or Password')
         }
@@ -51,12 +49,15 @@ app.get('/signup', (req,res)=>{
 app.post('/signup', (req,res)=>{
     const username = req.body.username;
     const password = req.body.password;
-    const id = datas[datas.length -1].id + 1;
+    const id = Number(datas[datas.length - 1].id) + 1;
+    const registeredUser = datas.find(i => i.username == username);
     if(!username || !password){
-        return res.status(400).send('Username or Password required');
+        return res.status(400).send('Username and Password required');
+    } else if (registeredUser !== undefined) {
+        res.send('Username taken!')
     } else {
         const userData = {
-            'id': id,
+            'id': id.toString(),
             'username': username,
             'password': password
         };
@@ -66,13 +67,9 @@ app.post('/signup', (req,res)=>{
 })
 
 app.get('/user/:id', (req,res) =>{
-    // function getName(id, username){
-    //     return
-    // }
-    const data = datas.find(i => i.id == +req.params.id)
-    // const username = datas.find(i => i.username == +req.params.username)
-    // res.send(`welcome user ${req.params.id}`)
-    res.send(`welcome, ${data.id}`)
+    //show user infos
+    const data = datas.find(i => i.id === req.params.id);
+    res.send(`welcome, ${data.username}`);
 })
 
 app.listen(port, ()=>{
@@ -80,21 +77,17 @@ app.listen(port, ()=>{
 });
 
 function authenticationData(username, password){
+    //match up user input data with json data
     let userIndex = datas.findIndex(function(item){
         return item.username === username
     });
-    let passIndex = datas.findIndex(function(item){
-        return item.password === password
-    });
-    if(userIndex == '-1' || passIndex == '-1'){
+    // console.log(datas[userIndex])
+    console.log(userIndex)
+    if(userIndex === -1){
         return 'invalid';
-    } else if (userIndex == passIndex){
-        console.log(userIndex, passIndex)
-        console.log('datas valid')
-        return 'valid';
     } else {
-        console.log(userIndex, passIndex)
-        console.log('datas invalid')
-        return 'invalid';
+        if (datas[userIndex].password === password){
+            return 'valid';
+        }
     }
 }
